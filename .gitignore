@@ -1,0 +1,9 @@
+node_modules/
+.next/
+data/
+*.tsbuildinfo
+.DS_Store
+ios/Solace.xcodeproj/
+ios/build/
+ios/DerivedData/
+test-results/
