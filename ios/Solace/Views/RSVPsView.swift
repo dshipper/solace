@@ -18,14 +18,16 @@ struct RSVPsView: View {
           if model.rsvps.isEmpty {
             Text("No replies yet. When people respond, you'll see them here.")
               .font(.subheadline)
-              .foregroundStyle(.secondary)
+              .foregroundStyle(Theme.muted)
           } else {
             ForEach(model.rsvps) { rsvp in
               RsvpRowView(rsvp: rsvp)
             }
           }
         }
+        .listRowBackground(Theme.paperRaised)
       }
+      .paperBackground()
       .navigationTitle("RSVPs")
       .refreshable {
         await model.refresh()
@@ -58,48 +60,46 @@ struct RSVPsView: View {
   private func chip(value: Int, label: String) -> some View {
     VStack(spacing: 2) {
       Text("\(value)")
-        .font(.title3)
-        .fontWeight(.semibold)
-      Text(label)
-        .font(.caption)
-        .foregroundStyle(.secondary)
+        .font(.system(size: 22, weight: .medium, design: .serif))
+        .foregroundStyle(Theme.accentDeep)
+      Eyebrow(text: label, color: Theme.faint)
     }
     .frame(maxWidth: .infinity)
-    .padding(.vertical, 10)
-    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+    .padding(.vertical, 12)
+    .background(Theme.paperRaised, in: RoundedRectangle(cornerRadius: 10))
+    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.line))
   }
 }
 
 private struct RsvpRowView: View {
   let rsvp: RsvpRow
 
-  private let sage = Color(red: 90 / 255, green: 107 / 255, blue: 93 / 255)
-
   var body: some View {
     HStack(alignment: .top) {
       VStack(alignment: .leading, spacing: 3) {
         HStack(spacing: 6) {
           Text(rsvp.name)
-            .font(.headline)
+            .font(.system(size: 17, weight: .semibold, design: .serif))
           if rsvp.guestCount > 0 {
             Text("+\(rsvp.guestCount)")
               .font(.subheadline)
-              .foregroundStyle(.secondary)
+              .foregroundStyle(Theme.muted)
           }
         }
         if let note = rsvp.note, !note.isEmpty {
           Text(note)
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
+            .font(.system(size: 15, design: .serif))
+            .italic()
+            .foregroundStyle(Theme.muted)
         }
         Text(SolaceDates.formatDate(rsvp.createdAt))
           .font(.caption)
-          .foregroundStyle(.tertiary)
+          .foregroundStyle(Theme.faint)
       }
       Spacer()
       Text(rsvp.attending == "yes" ? "Attending" : "Declined")
         .font(.subheadline)
-        .foregroundStyle(rsvp.attending == "yes" ? sage : .secondary)
+        .foregroundStyle(rsvp.attending == "yes" ? Theme.accentDeep : Theme.muted)
     }
     .padding(.vertical, 2)
   }

@@ -9,16 +9,18 @@ struct UpdatesView: View {
       List {
         if let updates = model.bundle?.updates, !updates.isEmpty {
           ForEach(updates) { update in
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
               Text(update.title)
-                .font(.headline)
+                .font(.system(size: 17, weight: .semibold, design: .serif))
+              Eyebrow(
+                text: "\(update.authorName) · \(SolaceDates.formatDate(update.createdAt))",
+                color: Theme.faint)
               Text(update.bodyText)
-                .font(.subheadline)
-              Text("\(update.authorName) · \(SolaceDates.formatDate(update.createdAt))")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 15, design: .serif))
+                .lineSpacing(3)
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, 4)
+            .listRowBackground(Theme.paperRaised)
             .swipeActions {
               // Organizers may delete organizer-authored updates only (A12).
               if update.authorKind == "organizer" {
@@ -33,9 +35,11 @@ struct UpdatesView: View {
         } else {
           Text("No updates yet. Post one to let people know about schedule changes or the livestream.")
             .font(.subheadline)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Theme.muted)
+            .listRowBackground(Theme.paperRaised)
         }
       }
+      .paperBackground()
       .navigationTitle("Updates")
       .toolbar {
         Button {

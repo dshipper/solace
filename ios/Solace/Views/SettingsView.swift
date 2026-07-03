@@ -15,15 +15,26 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       Form {
-        Section("You") {
+        Section {
           LabeledContent("Name", value: model.session?.organizerName ?? "")
+        } header: {
+          Eyebrow(text: "You")
         }
+        .listRowBackground(Theme.paperRaised)
 
         if let bundle = model.bundle {
-          Section("Service") {
+          Section {
             LabeledContent("Funeral home", value: bundle.event.funeralHomeName)
-            LabeledContent("Family code", value: bundle.event.familyCode)
+            LabeledContent("Family code") {
+              Text(bundle.event.familyCode)
+                .font(.system(size: 15, weight: .medium, design: .serif))
+                .tracking(1)
+                .foregroundStyle(Theme.accentDeep)
+            }
+          } header: {
+            Eyebrow(text: "Service")
           }
+          .listRowBackground(Theme.paperRaised)
         }
 
         Section {
@@ -53,10 +64,11 @@ struct SettingsView: View {
               .foregroundStyle(.red)
           }
         } header: {
-          Text("Email updates")
+          Eyebrow(text: "Email updates")
         } footer: {
           Text("Off unless you turn it on. You can change your mind anytime.")
         }
+        .listRowBackground(Theme.paperRaised)
 
         Section {
           Button("Leave event", role: .destructive) {
@@ -66,7 +78,9 @@ struct SettingsView: View {
         } footer: {
           Text("This removes your access on this phone and deletes your organizer record. The service page and RSVPs are not affected.")
         }
+        .listRowBackground(Theme.paperRaised)
       }
+      .paperBackground()
       .navigationTitle("More")
       .confirmationDialog(
         "Leave this event?",

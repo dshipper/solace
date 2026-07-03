@@ -13,10 +13,11 @@ struct EventView: View {
             .padding(.top, 80)
         } else if let message = model.errorMessage {
           Text(message)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Theme.muted)
             .padding(24)
         }
       }
+      .paperBackground()
       .navigationTitle("Service")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
@@ -31,7 +32,7 @@ struct EventView: View {
   }
 
   private func content(_ bundle: EventBundle) -> some View {
-    VStack(alignment: .leading, spacing: 28) {
+    VStack(spacing: 34) {
       header(bundle.event)
       if !bundle.services.isEmpty {
         servicesSection(bundle.services)
@@ -43,11 +44,15 @@ struct EventView: View {
         updatesSection(bundle.updates)
       }
     }
-    .padding(20)
+    .padding(.horizontal, 24)
+    .padding(.top, 18)
+    .padding(.bottom, 40)
   }
 
   private func header(_ event: EventInfo) -> some View {
-    VStack(spacing: 12) {
+    VStack(spacing: 0) {
+      Eyebrow(text: "In loving memory")
+        .padding(.bottom, 16)
       if let photoUrl = event.photoUrl, let url = URL(string: photoUrl) {
         AsyncImage(url: url) { image in
           image
@@ -55,69 +60,91 @@ struct EventView: View {
             .scaledToFill()
         } placeholder: {
           Rectangle()
-            .fill(Color(.secondarySystemBackground))
+            .fill(Theme.goldSoft)
         }
-        .frame(height: 240)
-        .frame(maxWidth: .infinity)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .frame(maxWidth: 260, maxHeight: 300)
+        .clipShape(RoundedRectangle(cornerRadius: 3))
+        .padding(6)
+        .background(Theme.paperRaised, in: RoundedRectangle(cornerRadius: 5))
+        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Theme.line))
+        .shadow(color: Theme.ink.opacity(0.08), radius: 14, y: 6)
+        .padding(.bottom, 22)
       }
       Text(event.deceasedName)
-        .font(.title)
-        .fontWeight(.semibold)
-        .fontDesign(.serif)
+        .font(.system(size: 33, weight: .medium, design: .serif))
+        .foregroundStyle(Theme.ink)
         .multilineTextAlignment(.center)
+        .padding(.bottom, 7)
       let years = SolaceDates.formatYears(bornOn: event.bornOn, diedOn: event.diedOn)
       if !years.isEmpty {
         Text(years)
-          .font(.title3)
-          .foregroundStyle(.secondary)
+          .font(.system(size: 17, design: .serif))
+          .italic()
+          .tracking(2)
+          .foregroundStyle(Theme.muted)
+          .padding(.bottom, 14)
       }
-      Text(event.funeralHomeName)
-        .font(.footnote)
-        .foregroundStyle(.secondary)
+      Eyebrow(text: event.funeralHomeName, color: Theme.faint)
+      OrnamentView()
+        .padding(.top, 26)
     }
     .frame(maxWidth: .infinity)
   }
 
   private func servicesSection(_ services: [Service]) -> some View {
-    VStack(alignment: .leading, spacing: 12) {
-      Text("Services")
-        .font(.headline)
-      ForEach(services) { service in
-        ServiceCard(service: service)
+    VStack(spacing: 22) {
+      SectionLabel(text: "Services")
+      ForEach(Array(services.enumerated()), id: \.element.id) { index, service in
+        if index > 0 {
+          Rectangle()
+            .fill(Theme.line.opacity(0.7))
+            .frame(height: 1)
+            .padding(.horizontal, 30)
+        }
+        ServiceEntry(service: service)
       }
     }
   }
 
   private func obituarySection(_ text: String) -> some View {
-    VStack(alignment: .leading, spacing: 12) {
-      Text("Obituary")
-        .font(.headline)
-      ForEach(Array(paragraphs(of: text).enumerated()), id: \.offset) { _, paragraph in
-        Text(paragraph)
-          .fontDesign(.serif)
+    VStack(spacing: 20) {
+      SectionLabel(text: "Obituary")
+      VStack(alignment: .leading, spacing: 14) {
+        ForEach(Array(paragraphs(of: text).enumerated()), id: \.offset) { _, paragraph in
+          Text(paragraph)
+            .font(.system(size: 16.5, design: .serif))
+            .foregroundStyle(Theme.ink)
+            .lineSpacing(5)
+        }
       }
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
 
   private func updatesSection(_ updates: [EventUpdate]) -> some View {
-    VStack(alignment: .leading, spacing: 12) {
-      Text("Updates")
-        .font(.headline)
-      ForEach(updates) { update in
-        VStack(alignment: .leading, spacing: 4) {
-          Text(update.title)
-            .font(.subheadline)
-            .fontWeight(.semibold)
-          Text(update.bodyText)
-            .font(.subheadline)
-          Text("\(update.authorName) · \(SolaceDates.formatDate(update.createdAt))")
-            .font(.caption)
-            .foregroundStyle(.secondary)
+    VStack(spacing: 18) {
+      SectionLabel(text: "Updates")
+      VStack(alignment: .leading, spacing: 0) {
+        ForEach(Array(updates.enumerated()), id: \.element.id) { index, update in
+          if index > 0 {
+            Rectangle()
+              .fill(Theme.line.opacity(0.7))
+              .frame(height: 1)
+              .padding(.vertical, 14)
+          }
+          VStack(alignment: .leading, spacing: 5) {
+            Text(update.title)
+              .font(.system(size: 18, weight: .semibold, design: .serif))
+              .foregroundStyle(Theme.ink)
+            Eyebrow(text: "\(update.authorName) · \(SolaceDates.formatDate(update.createdAt))", color: Theme.faint)
+            Text(update.bodyText)
+              .font(.system(size: 15.5, design: .serif))
+              .foregroundStyle(Theme.ink)
+              .lineSpacing(4)
+              .padding(.top, 3)
+          }
+          .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
       }
     }
   }
@@ -131,52 +158,64 @@ struct EventView: View {
   }
 }
 
-private struct ServiceCard: View {
+private struct ServiceEntry: View {
   let service: Service
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 6) {
+    VStack(spacing: 0) {
+      if let title = service.title, !title.isEmpty {
+        Eyebrow(text: SolaceDates.kindLabel(service.kind))
+          .padding(.bottom, 6)
+      }
       Text(displayTitle)
-        .font(.subheadline)
-        .fontWeight(.semibold)
+        .font(.system(size: 23, weight: .medium, design: .serif))
+        .foregroundStyle(Theme.ink)
+        .multilineTextAlignment(.center)
+        .padding(.bottom, 6)
       let when = SolaceDates.formatDateTime(service.startsAt)
       if !when.isEmpty {
-        Text(when)
-          .font(.subheadline)
-      }
-      let until = SolaceDates.formatTime(service.endsAt)
-      if !until.isEmpty {
-        Text("Until \(until)")
-          .font(.caption)
-          .foregroundStyle(.secondary)
+        let until = SolaceDates.formatTime(service.endsAt)
+        Text(until.isEmpty ? when : "\(when) – \(until)")
+          .font(.system(size: 14.5, weight: .semibold))
+          .foregroundStyle(Theme.ink)
+          .multilineTextAlignment(.center)
+          .padding(.bottom, 10)
       }
       if let venue = service.venueName, !venue.isEmpty {
         Text(venue)
-          .font(.subheadline)
+          .font(.system(size: 17, design: .serif))
+          .foregroundStyle(Theme.ink)
+          .padding(.bottom, 3)
       }
       if let address = service.address, !address.isEmpty {
         if let url = mapsURL(for: address) {
           Link(address, destination: url)
-            .font(.caption)
+            .font(.footnote)
+            .foregroundStyle(Theme.muted)
+            .underline(true, color: Theme.line)
+            .padding(.bottom, 8)
         } else {
           Text(address)
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            .font(.footnote)
+            .foregroundStyle(Theme.muted)
+            .padding(.bottom, 8)
         }
       }
       if let notes = service.notes, !notes.isEmpty {
         Text(notes)
-          .font(.caption)
-          .foregroundStyle(.secondary)
+          .font(.system(size: 15, design: .serif))
+          .italic()
+          .foregroundStyle(Theme.muted)
+          .multilineTextAlignment(.center)
+          .padding(.bottom, 8)
       }
       if let livestream = service.livestreamUrl, let url = URL(string: livestream) {
         Link("Watch the livestream", destination: url)
-          .font(.caption)
+          .font(.footnote)
+          .foregroundStyle(Theme.accentDeep)
       }
     }
-    .padding(12)
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+    .frame(maxWidth: .infinity)
   }
 
   private var displayTitle: String {

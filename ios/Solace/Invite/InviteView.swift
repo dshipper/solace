@@ -39,13 +39,15 @@ struct InviteView: View {
             Section {
               Text(lastRunSummary)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.accentDeep)
             }
+            .listRowBackground(Theme.paperRaised)
           }
           shareSection
           logSection
         }
       }
+      .paperBackground()
       .navigationTitle("Invite")
       .sheet(isPresented: $showPicker) {
         ContactsPicker { picked in
@@ -96,10 +98,11 @@ struct InviteView: View {
         limitedAccessButton
       }
     } header: {
-      Text("Invite people")
+      Eyebrow(text: "Invite people")
     } footer: {
       Text("You choose who to invite and send each message yourself. Contacts never leave your phone.")
     }
+    .listRowBackground(Theme.paperRaised)
   }
 
   // A13: after a limited-access bulk add, offer the management path so the
@@ -142,10 +145,11 @@ struct InviteView: View {
         Toggle("Send as one group message", isOn: groupModeBinding)
       }
     } header: {
-      Text("Ready to invite · \(selected.count)")
+      Eyebrow(text: "Ready to invite · \(selected.count)")
     } footer: {
       Text("Swipe to remove anyone before sending. Messages go out one at a time, from you.")
     }
+    .listRowBackground(Theme.paperRaised)
   }
 
   private var sendSection: some View {
@@ -159,6 +163,7 @@ struct InviteView: View {
       }
       .disabled(reachableCount == 0)
     }
+    .listRowBackground(Theme.paperRaised)
   }
 
   private var sendingSection: some View {
@@ -173,6 +178,7 @@ struct InviteView: View {
     } footer: {
       Text("Each message opens for you to review and send.")
     }
+    .listRowBackground(Theme.paperRaised)
   }
 
   private var shareSection: some View {
@@ -183,6 +189,7 @@ struct InviteView: View {
         }
       }
     }
+    .listRowBackground(Theme.paperRaised)
   }
 
   private var logSection: some View {
@@ -214,10 +221,11 @@ struct InviteView: View {
         }
       }
     } header: {
-      Text("Invited · \(model.inviteLog.sentCount)")
+      Eyebrow(text: "Invited · \(model.inviteLog.sentCount)")
     } footer: {
       Text("Contacts never leave your phone.")
     }
+    .listRowBackground(Theme.paperRaised)
   }
 
   private var groupModeBinding: Binding<Bool> {

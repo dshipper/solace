@@ -9,32 +9,49 @@ struct JoinView: View {
   var body: some View {
     NavigationStack {
       ScrollView {
-        VStack(alignment: .leading, spacing: 24) {
-          VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 0) {
+          VStack(spacing: 10) {
+            Eyebrow(text: "Welcome")
             Text("Solace")
-              .font(.largeTitle)
-              .fontWeight(.semibold)
-              .fontDesign(.serif)
+              .font(.system(size: 40, weight: .medium, design: .serif))
+              .foregroundStyle(Theme.ink)
             Text("The funeral home gave your family a code. Enter it here to see the service details, invite people, and follow their replies.")
-              .foregroundStyle(.secondary)
+              .font(.system(size: 16, design: .serif))
+              .foregroundStyle(Theme.muted)
+              .multilineTextAlignment(.center)
+              .lineSpacing(3)
+              .padding(.horizontal, 8)
           }
-          .padding(.top, 32)
+          .padding(.top, 56)
+
+          OrnamentView()
+            .padding(.vertical, 28)
 
           VStack(spacing: 12) {
             TextField("Family code", text: $familyCode)
               .textInputAutocapitalization(.characters)
               .autocorrectionDisabled()
-              .textFieldStyle(.roundedBorder)
+              .font(.system(size: 18, weight: .medium, design: .serif))
+              .tracking(1.5)
+              .multilineTextAlignment(.center)
+              .padding(.vertical, 13)
+              .background(Theme.paperRaised, in: RoundedRectangle(cornerRadius: 9))
+              .overlay(RoundedRectangle(cornerRadius: 9).stroke(Theme.line))
               .accessibilityIdentifier("familyCodeField")
             TextField("Your name", text: $name)
-              .textFieldStyle(.roundedBorder)
+              .multilineTextAlignment(.center)
+              .padding(.vertical, 13)
+              .background(Theme.paperRaised, in: RoundedRectangle(cornerRadius: 9))
+              .overlay(RoundedRectangle(cornerRadius: 9).stroke(Theme.line))
               .accessibilityIdentifier("nameField")
           }
 
           if let message = model.errorMessage {
             Text(message)
               .font(.subheadline)
-              .foregroundStyle(.red)
+              .foregroundStyle(Color(red: 164 / 255, green: 66 / 255, blue: 58 / 255))
+              .multilineTextAlignment(.center)
+              .padding(.top, 14)
               .accessibilityIdentifier("joinError")
           }
 
@@ -53,14 +70,20 @@ struct JoinView: View {
           .buttonStyle(.borderedProminent)
           .controlSize(.large)
           .disabled(model.isJoining)
+          .padding(.top, 20)
           .accessibilityIdentifier("joinButton")
 
           Text("Codes look like CEDAR-WREN-4821. Capitalization doesn't matter.")
             .font(.caption)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Theme.faint)
+            .multilineTextAlignment(.center)
+            .padding(.top, 14)
         }
-        .padding(24)
+        .padding(.horizontal, 28)
+        .frame(maxWidth: 420)
+        .frame(maxWidth: .infinity)
       }
+      .paperBackground()
     }
   }
 }
