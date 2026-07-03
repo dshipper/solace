@@ -1,0 +1,66 @@
+.wrap {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4.5rem 1.25rem 3.5rem;
+}
+
+.title {
+  font-size: clamp(3rem, 9vw, 4.3rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0.9rem 0 0.7rem;
+}
+
+.tag {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 1.12rem;
+  max-width: 26rem;
+  margin-bottom: 0;
+}
+
+.heroOrnament {
+  margin: 2.3rem 0 0.4rem;
+}
+
+.paths {
+  width: 100%;
+  max-width: 27rem;
+  margin: 1.6rem auto 0;
+  text-align: left;
+}
+
+.path {
+  padding: 1.2rem 0;
+}
+
+.path + .path {
+  border-top: 1px solid var(--line-soft);
+}
+
+.pathLabel {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+}
+
+.pathBody {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}

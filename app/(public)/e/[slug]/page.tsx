@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { publicEventBundle } from "@/lib/bundles";
 import { getEventBySlug } from "@/lib/events";
 import { formatYears } from "@/lib/format";
+import Ornament from "@/components/public/Ornament";
 import Paragraphs from "@/components/public/Paragraphs";
 import RsvpSection from "@/components/public/RsvpSection";
 import ServiceCard from "@/components/public/ServiceCard";
@@ -38,7 +39,8 @@ export default async function EventPage({ params }: PageProps) {
   return (
     <main className={styles.page}>
       <div className="container">
-        <header className={styles.header}>
+        <header className={`${styles.header} rise`}>
+          <span className={`eyebrow ${styles.headerEyebrow}`}>{"In loving memory"}</span>
           {pub.photoUrl ? (
             <img className={styles.photo} src={pub.photoUrl} alt={`Photograph of ${pub.deceasedName}`} />
           ) : null}
@@ -48,15 +50,18 @@ export default async function EventPage({ params }: PageProps) {
         </header>
 
         {pub.obituaryText.trim() ? (
-          <section aria-label="Obituary">
-            <Paragraphs text={pub.obituaryText} className={styles.obituaryPara} />
+          <section aria-label="Obituary" className="rise-2">
+            <Ornament className={styles.headerOrnament} />
+            <div className={styles.obituary}>
+              <Paragraphs text={pub.obituaryText} className={styles.obituaryPara} />
+            </div>
           </section>
         ) : null}
 
         {/* Archived pages show only the obituary + contact note (spec): no schedule, updates, or RSVP form. */}
         {!archived && bundle.services.length > 0 ? (
-          <section aria-label="Services">
-            <hr className="divider" />
+          <section aria-label="Services" className="rise-3">
+            <Ornament />
             <h2 className={styles.sectionTitle}>{"Services"}</h2>
             <div className={styles.serviceList}>
               {bundle.services.map((service) => (
@@ -67,15 +72,15 @@ export default async function EventPage({ params }: PageProps) {
         ) : null}
 
         {!archived && bundle.updates.length > 0 ? (
-          <section aria-label="Updates">
-            <hr className="divider" />
+          <section aria-label="Updates" className="rise-4">
+            <Ornament />
             <h2 className={styles.sectionTitle}>{"Updates"}</h2>
             <UpdatesFeed updates={bundle.updates} />
           </section>
         ) : null}
 
-        <section id="rsvp" aria-label="Reply">
-          <hr className="divider" />
+        <section id="rsvp" aria-label="Reply" className="rise-4">
+          <Ornament />
           {archived ? (
             <p className={styles.archivedNote}>
               {`This service has passed. For anything you need, please contact ${pub.funeralHomeName}.`}

@@ -1,28 +1,28 @@
 .footer {
   border-top: 1px solid var(--line);
-  margin-top: 4rem;
-  padding: 1.4rem 0 2.25rem;
+  margin-top: 4.5rem;
+  padding: 2rem 0 2.5rem;
 }
 
 .inner {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: center;
 }
 
 .name {
   font-family: var(--sans);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--faint);
 }
 
 .link {
   font-family: var(--sans);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--muted);
 }

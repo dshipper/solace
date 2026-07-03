@@ -7,7 +7,7 @@ export default function ServiceCard({ service }: { service: Service }) {
   const when = formatDateTime(service.startsAt);
   const endTime = formatTime(service.endsAt);
   return (
-    <div className={`card ${styles.serviceCard}`}>
+    <div className={styles.serviceEntry}>
       {title ? <p className={styles.serviceKind}>{KIND_LABELS[service.kind]}</p> : null}
       <h3 className={styles.serviceTitle}>{title || KIND_LABELS[service.kind]}</h3>
       {when ? <p className={styles.serviceWhen}>{endTime ? `${when} – ${endTime}` : when}</p> : null}
