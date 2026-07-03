@@ -60,7 +60,11 @@ function main() {
     console.log(`  Family code: ${event.familyCode}`);
     console.log(`  Public page: ${publicUrl(event)}`);
   } else {
-    console.log("Events already exist; skipping demo event");
+    const existing = listEvents()[0];
+    console.log(`Events already exist; skipping demo event`);
+    console.log(`  Existing event: ${existing.deceasedName}`);
+    console.log(`  Family code: ${existing.familyCode}`);
+    console.log(`  Public page: ${publicUrl(existing)}`);
   }
 }
 

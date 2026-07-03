@@ -1,0 +1,28 @@
+.footer {
+  border-top: 1px solid var(--line);
+  margin-top: 4rem;
+  padding: 1.4rem 0 2.25rem;
+}
+
+.inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.link {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+}

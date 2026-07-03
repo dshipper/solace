@@ -1,0 +1,59 @@
+name: Solace
+options:
+  bundleIdPrefix: to.every
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGNING_ALLOWED: "NO"
+targets:
+  Solace:
+    type: application
+    platform: iOS
+    sources:
+      - Solace
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: to.every.solace
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: Solace/Info.plist
+      properties:
+        CFBundleDisplayName: Solace
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSContactsUsageDescription: "Solace uses your contacts only on this phone, to help you address invitations you send yourself. Contacts are never uploaded."
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        SolaceAPIBase: "http://127.0.0.1:4863"
+  SolaceTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - SolaceTests
+    dependencies:
+      - target: Solace
+  SolaceUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - SolaceUITests
+    dependencies:
+      - target: Solace
+schemes:
+  Solace:
+    build:
+      targets:
+        Solace: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - SolaceTests
+        - SolaceUITests

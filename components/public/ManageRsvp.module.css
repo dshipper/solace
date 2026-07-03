@@ -1,0 +1,72 @@
+.summary {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.closedNote {
+  color: var(--muted);
+  margin: 1.25rem 0;
+}
+
+.removeSection {
+  padding-bottom: 0.5rem;
+}
+
+.removeBtn {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--error);
+}
+
+.removeBtn:hover {
+  border-color: var(--error);
+}
+
+.dangerBtn {
+  background: var(--error);
+  border-color: var(--error);
+  color: #fff;
+}
+
+.dangerBtn:hover {
+  background: #8f382f;
+  border-color: #8f382f;
+}
+
+.confirmText {
+  font-family: var(--sans);
+  font-size: 0.98rem;
+  margin-bottom: 0.9rem;
+}
+
+.confirmRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.deleteError {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--error);
+  background: var(--error-soft);
+  border: 1px solid rgba(164, 66, 58, 0.25);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.removedCard {
+  padding: 1.75rem 1.5rem;
+}
+
+.removedLead {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.removedBody {
+  font-family: var(--sans);
+  margin-bottom: 0;
+}
