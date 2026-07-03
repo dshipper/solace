@@ -34,6 +34,9 @@ struct RSVPsView: View {
         await model.loadRsvps()
       }
       .task {
+        // Load both: the rows come from loadRsvps, the summary chips from the
+        // bundle — fetching only one leaves the chips stale on first open.
+        await model.refresh()
         await model.loadRsvps()
       }
       .onChange(of: scenePhase) { _, phase in
