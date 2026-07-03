@@ -1,5 +1,7 @@
 # Solace
 
+[![CI](https://github.com/dshipper/solace/actions/workflows/ci.yml/badge.svg)](https://github.com/dshipper/solace/actions/workflows/ci.yml)
+
 **A gentle way for funeral homes to help families invite people to a service and manage the replies.**
 
 When someone dies, a family member ends up with a brutal chore: telling everyone, one text at a time, and keeping track of who's coming. Solace turns that into three connected pieces:
