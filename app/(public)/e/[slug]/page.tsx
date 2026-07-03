@@ -53,7 +53,8 @@ export default async function EventPage({ params }: PageProps) {
           </section>
         ) : null}
 
-        {bundle.services.length > 0 ? (
+        {/* Archived pages show only the obituary + contact note (spec): no schedule, updates, or RSVP form. */}
+        {!archived && bundle.services.length > 0 ? (
           <section aria-label="Services">
             <hr className="divider" />
             <h2 className={styles.sectionTitle}>{"Services"}</h2>
@@ -65,7 +66,7 @@ export default async function EventPage({ params }: PageProps) {
           </section>
         ) : null}
 
-        {bundle.updates.length > 0 ? (
+        {!archived && bundle.updates.length > 0 ? (
           <section aria-label="Updates">
             <hr className="divider" />
             <h2 className={styles.sectionTitle}>{"Updates"}</h2>

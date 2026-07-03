@@ -55,6 +55,39 @@ final class InviteLogTests: XCTestCase {
     XCTAssertEqual(resend[1].channel, .unreachable)
   }
 
+  func testResendExcludesContactsLaterSent() {
+    let log = InviteLog(directory: tempDir)
+    log.record(contact: contact("1"), status: .cancelled)
+    log.record(contact: contact("2"), status: .cancelled)
+    log.record(contact: contact("1"), status: .sent)
+
+    XCTAssertEqual(log.unsentEntries.count, 1)
+    let resend = log.resendContacts()
+    XCTAssertEqual(resend.count, 1)
+    XCTAssertEqual(resend[0].phoneNumber, "+15550002")
+  }
+
+  func testResendDedupesRepeatedAttemptsForOnePerson() {
+    let log = InviteLog(directory: tempDir)
+    log.record(contact: contact("1"), status: .cancelled)
+    log.record(contact: contact("1"), status: .cancelled)
+
+    let resend = log.resendContacts()
+    XCTAssertEqual(resend.count, 1)
+    // The same person resent again must merge to the same queue entry.
+    XCTAssertEqual(log.resendContacts()[0].id, resend[0].id)
+  }
+
+  func testUnreachableIsRecordedOnlyOnce() {
+    let log = InviteLog(directory: tempDir)
+    let person = contact("3", channel: .unreachable)
+    log.record(contact: person, status: .unreachable)
+    log.record(contact: person, status: .unreachable)
+
+    XCTAssertEqual(log.entries.count, 1)
+    XCTAssertEqual(log.unsentEntries.count, 1)
+  }
+
   func testClearRemovesEntriesAndFile() {
     let log = InviteLog(directory: tempDir)
     log.record(contact: contact("1"), status: .sent)

@@ -27,6 +27,13 @@ final class BulkAddModel {
     return count == 1 ? "Added 1 contact" : "Added \(count) contacts"
   }
 
+  /// True when the last bulk add ran under iOS 18+ limited contacts access,
+  /// so the UI can offer the limited-access management path (A13).
+  var isLimitedResult: Bool {
+    if case .loaded(_, limited: true) = state { return true }
+    return false
+  }
+
   func loadAll() async -> [InviteContact] {
     state = .requesting
     let store = CNContactStore()

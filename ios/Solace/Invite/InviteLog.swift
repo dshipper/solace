@@ -30,6 +30,14 @@ final class InviteLog {
   }
 
   func record(contact: InviteContact, status: SendStatus) {
+    // Unreachable is a standing fact about the contact, not a fresh attempt:
+    // don't append a duplicate row every time a resend re-queues them.
+    if status == .unreachable {
+      let key = Self.identityKey(name: contact.name, phoneNumber: contact.phoneNumber, email: contact.email)
+      if entries.contains(where: { $0.status == .unreachable && Self.identityKey(for: $0) == key }) {
+        return
+      }
+    }
     entries.append(
       InviteLogEntry(
         id: UUID().uuidString,
@@ -46,21 +54,43 @@ final class InviteLog {
     entries.filter { $0.status == .sent }.count
   }
 
-  /// Attempts that never went out: cancelled or unreachable.
+  /// Attempts that never went out (cancelled or unreachable), one per person,
+  /// excluding anyone a later attempt actually reached.
   var unsentEntries: [InviteLogEntry] {
-    entries.filter { $0.status == .cancelled || $0.status == .unreachable }
+    let sentKeys = Set(entries.filter { $0.status == .sent }.map(Self.identityKey(for:)))
+    var seen = Set<String>()
+    var unsent: [InviteLogEntry] = []
+    for entry in entries where entry.status == .cancelled || entry.status == .unreachable {
+      let key = Self.identityKey(for: entry)
+      guard !sentKeys.contains(key), !seen.contains(key) else { continue }
+      seen.insert(key)
+      unsent.append(entry)
+    }
+    return unsent
   }
 
-  /// Rebuild contacts for a fresh queue from the unsent entries.
+  /// Rebuild contacts for a fresh queue from the unsent entries. The identity
+  /// key doubles as the contact id so re-adding the same person (e.g. tapping
+  /// Resend twice) merges instead of queueing duplicate compose sheets.
   func resendContacts() -> [InviteContact] {
     unsentEntries.map { entry in
       InviteContact(
-        id: entry.id,
+        id: Self.identityKey(for: entry),
         name: entry.contactName,
         phoneNumber: entry.phoneNumber,
         email: entry.email,
         channel: entry.channel)
     }
+  }
+
+  /// People are identified by how we'd reach them (phone, then email),
+  /// falling back to name for unreachable contacts.
+  private static func identityKey(name: String, phoneNumber: String?, email: String?) -> String {
+    phoneNumber ?? email ?? "name:\(name)"
+  }
+
+  private static func identityKey(for entry: InviteLogEntry) -> String {
+    identityKey(name: entry.contactName, phoneNumber: entry.phoneNumber, email: entry.email)
   }
 
   func clear() {

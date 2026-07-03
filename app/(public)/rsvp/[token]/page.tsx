@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ManageRsvp from "@/components/public/ManageRsvp";
+import UpdatesFeed from "@/components/public/UpdatesFeed";
 import { formatServiceLine } from "@/lib/format";
 import { getRsvpByManageToken } from "@/lib/rsvps";
 import { listServices } from "@/lib/services";
 import { getFuneralHomeName } from "@/lib/settings";
+import { listUpdates } from "@/lib/updates";
 import styles from "@/components/public/EventPage.module.css";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +24,8 @@ export default async function ManageRsvpPage({ params }: PageProps) {
   const { token } = await params;
   const found = getRsvpByManageToken(token);
 
-  if (!found) {
+  // Drafts are staff-only; a retracted event's manage links go quiet too.
+  if (!found || found.event.status === "draft") {
     return (
       <main className="container" style={{ paddingTop: "6rem", paddingBottom: "6rem", textAlign: "center" }}>
         <h1 style={{ fontSize: "1.5rem" }}>{"This link is no longer valid."}</h1>
@@ -35,6 +38,7 @@ export default async function ManageRsvpPage({ params }: PageProps) {
   const funeralHomeName = getFuneralHomeName();
   const services = listServices(event.id);
   const firstServiceLine = services.length > 0 ? formatServiceLine(services[0]) : null;
+  const updates = listUpdates(event.id);
 
   return (
     <main className={styles.page}>
@@ -64,6 +68,13 @@ export default async function ManageRsvpPage({ params }: PageProps) {
             marketingOptIn: rsvp.marketingOptIn,
           }}
         />
+        {updates.length > 0 ? (
+          <section aria-label="Updates">
+            <hr className="divider" />
+            <h2 className={styles.sectionTitle}>{"Updates"}</h2>
+            <UpdatesFeed updates={updates} />
+          </section>
+        ) : null}
       </div>
     </main>
   );

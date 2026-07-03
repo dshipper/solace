@@ -1,4 +1,5 @@
 import SwiftUI
+import ContactsUI
 
 struct InviteView: View {
   @Environment(AppModel.self) private var model
@@ -6,6 +7,7 @@ struct InviteView: View {
   @State private var selected: [InviteContact] = []
   @State private var showPicker = false
   @State private var showBulkConfirm = false
+  @State private var showLimitedAccessPicker = false
   @State private var bulk = BulkAddModel()
   @State private var bulkNotice: String?
   @State private var queue = SendQueue()
@@ -90,10 +92,30 @@ struct InviteView: View {
           .font(.subheadline)
           .foregroundStyle(.secondary)
       }
+      if bulk.isLimitedResult {
+        limitedAccessButton
+      }
     } header: {
       Text("Invite people")
     } footer: {
       Text("You choose who to invite and send each message yourself. Contacts never leave your phone.")
+    }
+  }
+
+  // A13: after a limited-access bulk add, offer the management path so the
+  // user can share more contacts with Solace without leaving the app.
+  // (.limited only exists on iOS 18+, so the button never shows earlier.)
+  @ViewBuilder
+  private var limitedAccessButton: some View {
+    if #available(iOS 18.0, *) {
+      Button {
+        showLimitedAccessPicker = true
+      } label: {
+        Label("Choose more contacts to share", systemImage: "person.crop.circle.badge.checkmark")
+      }
+      .contactAccessPicker(isPresented: $showLimitedAccessPicker) { _ in
+        Task { await runBulkAdd() }
+      }
     }
   }
 

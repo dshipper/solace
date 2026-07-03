@@ -11,7 +11,7 @@
     "test:integration": "next build && vitest run --config vitest.integration.config.ts",
     "ios:generate": "xcodegen generate --spec ios/project.yml",
     "ios:build": "xcodebuild -project ios/Solace.xcodeproj -scheme Solace -destination 'platform=iOS Simulator,id=843FA19C-C232-43B0-8E45-7AB39F722CFB' build",
-    "ios:test": "xcodebuild test -project ios/Solace.xcodeproj -scheme Solace -destination 'platform=iOS Simulator,id=843FA19C-C232-43B0-8E45-7AB39F722CFB'"
+    "ios:test": "TEST_RUNNER_SOLACE_TEST_FAMILY_CODE=\"${SOLACE_TEST_FAMILY_CODE-}\" TEST_RUNNER_SOLACE_API_BASE=\"${SOLACE_API_BASE-}\" TEST_RUNNER_SOLACE_TEST_DECEASED_NAME=\"${SOLACE_TEST_DECEASED_NAME-}\" xcodebuild test -project ios/Solace.xcodeproj -scheme Solace -destination 'platform=iOS Simulator,id=843FA19C-C232-43B0-8E45-7AB39F722CFB'"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.0",

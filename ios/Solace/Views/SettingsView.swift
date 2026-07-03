@@ -94,9 +94,10 @@ struct SettingsView: View {
     }
   }
 
+  // A9 (binding): this exact wording is what consentVersion attests to.
   private var marketingCopy: String {
     let home = model.bundle?.event.funeralHomeName ?? "the funeral home"
-    return "Occasional emails from \(home) — grief resources and news. 16+."
+    return "I'm 16 or older and would like occasional emails from \(home) — grief resources and news about future services."
   }
 
   private var hasChanges: Bool {
